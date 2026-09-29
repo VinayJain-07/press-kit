@@ -1,0 +1,6 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 240 60" fill="currentColor">
+  <path d="M12 10 L28 48 L44 10 L35 10 L28 32 L21 10 Z" />
+  <circle cx="28" cy="8" r="3.5" />
+  <text x="56" y="38" font-family="-apple-system, BlinkMacSystemFont, 'Helvetica Neue', Helvetica, Arial, sans-serif" font-weight="700" font-size="24" letter-spacing="1">VinAI</text>
+  <text x="135" y="38" font-family="-apple-system, BlinkMacSystemFont, 'Helvetica Neue', Helvetica, Arial, sans-serif" font-weight="400" font-size="12" letter-spacing="2" opacity="0.6">TECHNOLOGIES</text>
+</svg>

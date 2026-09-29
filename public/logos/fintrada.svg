@@ -1,0 +1,5 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 220 50" fill="currentColor">
+  <path d="M12 36 L19 22 L26 29 L35 14" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" fill="none" />
+  <polyline points="29,14 35,14 35,20" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" fill="none" />
+  <text x="46" y="32" font-family="-apple-system, BlinkMacSystemFont, 'Helvetica Neue', Helvetica, Arial, sans-serif" font-weight="700" font-size="20" letter-spacing="-0.5">FinTrada</text>
+</svg>

@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import {
   ArrowUpRight,
   Mail,
@@ -23,6 +23,12 @@ import {
   Maximize2,
   Cpu,
   Layers,
+  Terminal,
+  Sliders,
+  X,
+  Command,
+  Code,
+  Zap,
 } from "lucide-react";
 
 // Inline LinkedIn Icon
@@ -47,10 +53,189 @@ export default function PressKitPage() {
   const [copiedField, setCopiedField] = useState<string | null>(null);
   const [activeBioTab, setActiveBioTab] = useState<"short50" | "standard150" | "comprehensive500">("standard150");
 
+  // Easter Eggs State
+  const [isTerminalOpen, setIsTerminalOpen] = useState(false);
+  const [terminalInput, setTerminalInput] = useState("");
+  const [terminalLogs, setTerminalLogs] = useState<Array<{ cmd: string; output: React.ReactNode }>>([
+    {
+      cmd: "init",
+      output: (
+        <div className="space-y-1 text-zinc-400">
+          <p className="text-zinc-200 font-semibold">Vinay Jain Architecture Terminal [v2.6.9-prod]</p>
+          <p>Unattended Agentic Operating System · Deterministic Capital Leverage</p>
+          <p className="text-xs text-zinc-500 pt-1">
+            Type <span className="text-white font-mono font-semibold">help</span> or click suggestions below to inspect systems &amp; blueprints.
+          </p>
+        </div>
+      ),
+    },
+  ]);
+  const [unicornMode, setUnicornMode] = useState(false);
+  const [vjTapCount, setVjTapCount] = useState(0);
+  const [tokenInput, setTokenInput] = useState(5000000);
+
+  // Easter Egg: Keyboard Shortcuts (Cmd+K / Ctrl+K and Konami Code)
+  useEffect(() => {
+    const konamiSequence = [
+      "ArrowUp", "ArrowUp", "ArrowDown", "ArrowDown",
+      "ArrowLeft", "ArrowRight", "ArrowLeft", "ArrowRight",
+      "b", "a"
+    ];
+    let konamiIndex = 0;
+
+    const handleKeyDown = (e: KeyboardEvent) => {
+      // Cmd+K or Ctrl+K opens Terminal
+      if ((e.metaKey || e.ctrlKey) && e.key.toLowerCase() === "k") {
+        e.preventDefault();
+        setIsTerminalOpen((prev) => !prev);
+        return;
+      }
+
+      // Escape closes Terminal
+      if (e.key === "Escape") {
+        setIsTerminalOpen(false);
+      }
+
+      // Konami Code sequence tracker
+      if (e.key.toLowerCase() === konamiSequence[konamiIndex].toLowerCase()) {
+        konamiIndex++;
+        if (konamiIndex === konamiSequence.length) {
+          setUnicornMode(true);
+          konamiIndex = 0;
+        }
+      } else {
+        konamiIndex = 0;
+      }
+    };
+
+    window.addEventListener("keydown", handleKeyDown);
+    return () => window.removeEventListener("keydown", handleKeyDown);
+  }, []);
+
+  const handleVjClick = () => {
+    setVjTapCount((c) => {
+      const next = c + 1;
+      if (next >= 5) {
+        setUnicornMode((prev) => !prev);
+        return 0;
+      }
+      return next;
+    });
+  };
+
   const handleCopy = (text: string, field: string) => {
     navigator.clipboard.writeText(text);
     setCopiedField(field);
     setTimeout(() => setCopiedField(null), 2000);
+  };
+
+  const executeCommand = (cmd: string) => {
+    let output: React.ReactNode = null;
+    switch (cmd) {
+      case "help":
+        output = (
+          <div className="space-y-1.5 text-xs font-mono text-zinc-300">
+            <p className="text-white font-semibold">Available Directives:</p>
+            <p><span className="text-zinc-100 font-bold">whoami</span> — Executive institutional profile &amp; mandate</p>
+            <p><span className="text-zinc-100 font-bold">unicorn</span> — Architectural blueprint for One-Person AI Unicorn</p>
+            <p><span className="text-zinc-100 font-bold">anand-mahindra</span> — Keynote commendation &amp; citation record</p>
+            <p><span className="text-zinc-100 font-bold">metrics</span> — Audited production metrics &amp; pipeline benchmarks</p>
+            <p><span className="text-zinc-100 font-bold">quant</span> — Actuarial IAI distinction proof &amp; stochastic equations</p>
+            <p><span className="text-zinc-100 font-bold">contact</span> — Instant executive communication channels</p>
+            <p><span className="text-zinc-100 font-bold">unicorn-mode</span> — Toggle ambient Unicorn Core HUD</p>
+            <p><span className="text-zinc-100 font-bold">clear</span> — Reset terminal output</p>
+          </div>
+        );
+        break;
+      case "whoami":
+        output = (
+          <div className="text-xs font-mono text-zinc-300 space-y-1">
+            <p className="text-white font-bold">VINAY JAIN</p>
+            <p>Title: Systems Architect &amp; Technology Executive</p>
+            <p>Mandate: Building autonomous AI infrastructure for the world&apos;s first One Person AI Unicorn.</p>
+            <p>Accreditation: TEDx Keynote Speaker, Actuarial Science Topper (IAI), IRM UK National Winner, IIT Roorkee Macromolecular Engineer, IBS Programme Director.</p>
+          </div>
+        );
+        break;
+      case "unicorn":
+        output = (
+          <div className="text-xs font-mono text-zinc-300 space-y-1">
+            <p className="text-white font-bold">ONE-PERSON AI UNICORN INFRASTRUCTURE BLUEPRINT:</p>
+            <p>1. Deterministic State Machines: Event-driven Fastify webhooks + Redis queues.</p>
+            <p>2. Semantic Context Pruning: Smark Connect compression (-95% token footprint).</p>
+            <p>3. Zero-Hallucination Boundaries: Cryptographic schema validation &amp; transactional CRM sync.</p>
+            <p>4. Stochastic Risk Control: Actuarial vega/gamma balancing applied to micro-capital allocation.</p>
+          </div>
+        );
+        break;
+      case "anand-mahindra":
+        output = (
+          <div className="text-xs font-mono text-zinc-300 space-y-1">
+            <p className="text-white font-bold">ANAND MAHINDRA RECOGNITION:</p>
+            <p>Formally commended by Anand Mahindra for curating international thought leaders and presiding over frontier intellectual discourse at the intersection of AI and academic systems.</p>
+          </div>
+        );
+        break;
+      case "metrics":
+        output = (
+          <div className="text-xs font-mono text-zinc-300 space-y-1">
+            <p className="text-white font-bold">AUDITED PRODUCTION METRICS:</p>
+            <p>· Enterprise Pipeline Generated: $850,000+ in 24 hours (Jedy Apps)</p>
+            <p>· LLM Token Overhead Slashing: 95% (3.8M tokens saved / cycle)</p>
+            <p>· Delegates Addressed: 8,000+ at JITO Global Trade Summit</p>
+            <p>· Academic Residency: 450+ MBAs &amp; 30+ Professors (IBS AIMS50x)</p>
+            <p>· Mathematical Standing: AIR 1 / Top 1% (IAI ACET distinction)</p>
+          </div>
+        );
+        break;
+      case "quant":
+        output = (
+          <div className="text-xs font-mono text-zinc-300 space-y-1">
+            <p className="text-white font-bold">QUANTITATIVE RIGOR &amp; ACTUARIAL DISCIPLINE:</p>
+            <p>Institute of Actuaries of India (IAI) — ACET Cleared with Distinction (1st attempt).</p>
+            <p>Formula: dS_t = mu * S_t * dt + sigma * S_t * dW_t</p>
+            <p>Token Optimization Loss: argmin sum L(context_i) subject to Zero-Information-Loss</p>
+          </div>
+        );
+        break;
+      case "contact":
+        output = (
+          <div className="text-xs font-mono text-zinc-300 space-y-1">
+            <p className="text-white font-bold">DIRECT CHANNELS:</p>
+            <p>Email: rvinayjain@icloud.com</p>
+            <p>Phone: +91 8096933000 (Telangana, India)</p>
+            <p>LinkedIn: https://www.linkedin.com/in/rvinayjain07/</p>
+          </div>
+        );
+        break;
+      case "unicorn-mode":
+      case "matrix":
+        setUnicornMode((prev) => !prev);
+        output = (
+          <p className="text-xs font-mono text-white">
+            Unicorn Core HUD toggled: {!unicornMode ? "ACTIVE" : "STANDBY"}
+          </p>
+        );
+        break;
+      case "clear":
+        setTerminalLogs([]);
+        return;
+      default:
+        output = (
+          <p className="text-xs font-mono text-zinc-400">
+            Unknown directive: &quot;{cmd}&quot;. Type <span className="text-white font-bold">help</span> to view available commands.
+          </p>
+        );
+    }
+    setTerminalLogs((prev) => [...prev, { cmd, output }]);
+  };
+
+  const handleTerminalSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    const cmd = terminalInput.trim().toLowerCase();
+    if (!cmd) return;
+    executeCommand(cmd);
+    setTerminalInput("");
   };
 
   const pressKitLinks = {
@@ -91,9 +276,28 @@ export default function PressKitPage() {
     },
     {
       value: "AIR 1 & Top 1%",
-      label: "Mathematical & Quant Standing",
+      label: "Mathematical Standing",
       detail: "Actuarial Science Distinction (IAI - CM1, CS1, CB1, CB2), IRM UK Champion, Valedictorian.",
     },
+  ];
+
+  // Official Institutional & Enterprise Logos Data
+  const institutionalLogos = [
+    { name: "TEDx", role: "Keynote Speaker 2025", src: `${basePath}/logos/tedx.svg`, isDarkPng: false },
+    { name: "IIT Roorkee", role: "Macromolecular Engineering", src: `${basePath}/logos/iit-roorkee.svg`, isDarkPng: false },
+    { name: "IBS Hyderabad", role: "Programme Director & Guest Faculty", src: `${basePath}/logos/ibs-hyderabad.png`, isDarkPng: true },
+    { name: "Bloomberg", role: "Market Concepts Certified", src: `${basePath}/logos/bloomberg.svg`, isDarkPng: false },
+    { name: "NASSCOM", role: "Future Forge Delegate", src: `${basePath}/logos/nasscom.svg`, isDarkPng: false },
+    { name: "Institute of Actuaries of India", role: "ACET Distinction Topper", src: `${basePath}/logos/actuaries-india.png`, isDarkPng: true },
+    { name: "IRM UK", role: "National Winner Enterprise Risk", src: `${basePath}/logos/irm-uk.svg`, isDarkPng: false },
+    { name: "JITO", role: "Keynote (8,000+ Delegates)", src: `${basePath}/logos/jito.png`, isDarkPng: true },
+    { name: "The Times of India", role: "Featured Education Times", src: `${basePath}/logos/times-of-india.svg`, isDarkPng: false },
+    { name: "VinAI Technologies", role: "Founder & CEO", src: `${basePath}/logos/vinai.svg`, isDarkPng: false },
+    { name: "Classess.com", role: "GMO", src: `${basePath}/logos/classess.svg`, isDarkPng: false },
+    { name: "Dexset AI", role: "Partner in Growth", src: `${basePath}/logos/dexset.svg`, isDarkPng: false },
+    { name: "FinTrada", role: "Quantitative Systems", src: `${basePath}/logos/fintrada.svg`, isDarkPng: false },
+    { name: "Smark Connect", role: "Token Compression Engine", src: `${basePath}/logos/smark.svg`, isDarkPng: false },
+    { name: "Jedy Apps", role: "Autonomous Voice Outreach", src: `${basePath}/logos/jedy.svg`, isDarkPng: false },
   ];
 
   // Detailed, long-form Ventures & Systems Architecture data (NOT cards)
@@ -102,6 +306,7 @@ export default function PressKitPage() {
       number: "01",
       name: "VinAI Technologies",
       role: "Founder & Chief Executive Officer",
+      logoSrc: `${basePath}/logos/vinai.svg`,
       tagline: "Deterministic Enterprise Infrastructure & Autonomous Growth Engines",
       status: "Active Production Scale",
       strategicMandate:
@@ -118,38 +323,41 @@ export default function PressKitPage() {
       number: "02",
       name: "Dexset AI",
       role: "Partner in Growth & Strategic AI Architect",
-      tagline: "Egocentric Data Capture, High-Precision Orchestration & Contextual Knowledge Routing",
-      status: "Active Production Enterprise",
+      logoSrc: `${basePath}/logos/dexset.svg`,
+      tagline: "End-to-End Enterprise Operations Automation & Cognitive Orchestration",
+      status: "Active Commercial Scaling",
       strategicMandate:
-        "Leading the strategic systems architecture and commercial scaling for specialized egocentric data capture, spatial AI intelligence, and verified contextual knowledge distribution across enterprise clients.",
+        "Architecting enterprise-scale operational automations for B2B brands, managing multi-tier agentic workflows, and driving Generative Engine Optimization (GEO) across modern AI retrieval ecosystems.",
       structuralProblem:
-        "Modern frontier foundation models are fundamentally hobbled by unstructured, isolated enterprise data silos. When models lack verified data lineage and deterministic access to proprietary operational contexts, they produce unverifiable hallucinations, causing acute intellectual property exposure and regulatory non-compliance.",
+        "Knowledge-work enterprises bleed significant margins through repetitive, multi-system manual coordination—copying data between unstructured emails, disparate project management platforms, and legacy accounting software. Crucially, as enterprise buyer discovery shifts from search engines to answer engines, conventional SEO frameworks have become fundamentally obsolete.",
       architectureAndExecution:
-        "Architected a high-precision data orchestration layer that captures and synthesizes multi-modal enterprise intelligence. Dexset AI deploys secure vector embedding pipelines, air-gapped retrieval-augmented generation (RAG) routers, and deterministic semantic knowledge graphs that bridge raw unstructured logs with autonomous agent reasoning engines. Strict tenant isolation ensures zero cross-contamination while maintaining millisecond semantic retrieval latency.",
+        "Designed decoupled operational runtimes utilizing Make and custom REST integrations that automate multi-departmental workflows end-to-end. Formulated proprietary GEO semantic indexing protocols that restructure enterprise public web knowledge bases into high-signal citation graphs, guaranteeing inclusion in frontier LLM search responses and citation indexes.",
       commercialImpact:
-        "Empowers tier-1 enterprise organizations to deploy autonomous agents against proprietary data lakes with mathematical lineage verification and zero hallucination risk, driving continuous operational automation.",
-      techStack: ["TypeScript", "Vector Embeddings", "Deterministic RAG", "FastAPI Middleware", "PostgreSQL / pgvector", "Pinecone", "ChromaDB", "Air-Gapped LLM Deployments"],
+        "Reduced manual executive coordination overhead across partner enterprise operations by over 60%. Positioned enterprise clients as definitive authoritative citations within major conversational AI search indices.",
+      techStack: ["Make Enterprise Runtime", "REST APIs", "Vector Database Indexing", "Semantic Graph Optimization", "GEO Frameworks", "OpenAI Embeddings"],
     },
     {
       number: "03",
-      name: "Classess AI Pvt Ltd",
-      role: "Growth and Marketing Officer (GMO) & Strategic Architect",
-      tagline: "The World's First Fully AI-Native Academic Operating System",
-      status: "Global Higher Education Deployment",
+      name: "Classess.com",
+      role: "Global Marketing Officer (GMO) & Founding Architect",
+      logoSrc: `${basePath}/logos/classess.svg`,
+      tagline: "Cognitive University ERP & Agentic Educational Operating System",
+      status: "Active Institutional Deployment",
       strategicMandate:
-        "Directing worldwide go-to-market distribution, international institutional partnerships, and enterprise positioning for Classess AI. Spearheading the global transition of universities from fragmented legacy management systems to a unified, AI-native cognitive infrastructure layer.",
+        "Heading global marketing architecture, enterprise brand positioning, and go-to-market systems for an autonomous higher-education ERP that automates administration, learning workflows, and institutional governance.",
       structuralProblem:
-        "Higher education institutions globally operate on obsolete, decades-old ERP and LMS architectures. This structural obsolescence generates severe administrative friction, high student dropout rates, delayed academic intervention cycles, and hundreds of thousands of unrecoverable faculty hours spent on routine clerical overhead.",
+        "Universities and higher-education institutions remain shackled to legacy, siloed ERP architectures that require hundreds of administrative staff to process timetables, grade distributions, and student inquiries, creating massive operational overhead and fragmented institutional intelligence.",
       architectureAndExecution:
-        "Classess AI rebuilds university operations from first principles. It introduces an intelligent cognitive operating system that synchronizes institutional administration, maps personalized dynamic curriculum pathways, and deploys predictive student retention state machines. The architecture eliminates operational friction across enrollment, assessment, academic advising, and institutional compliance reporting.",
+        "Architected an agentic educational platform incorporating automated curriculum scheduling, predictive student performance models, and zero-touch administrative intelligence. Spearheaded the enterprise go-to-market strategy, positioning the platform before university chancellor boards and enterprise education trusts.",
       commercialImpact:
-        "Leading international academic partnerships, institutional pilot deployments, and university enterprise acquisitions across premier higher education institutions globally.",
-      techStack: ["Next.js Architecture", "Frontier LLM Orchestration", "Fastify Microservices", "Enterprise ERP Connectors", "Distributed SQL Databases", "Cognitive State Machines"],
+        "Delivered unified institutional governance across target campuses, eliminating administrative processing delays while providing university executive leadership with real-time operational telemetry.",
+      techStack: ["Enterprise ERP Architecture", "Full-Funnel GTM Systems", "Predictive Academic Analytics", "Multi-Tenant Cloud", "Next.js / Node.js"],
     },
     {
       number: "04",
       name: "FinTrada Quant Trading Platform",
       role: "Lead Quantitative Architect & Mathematical Researcher",
+      logoSrc: `${basePath}/logos/fintrada.svg`,
       tagline: "Dynamic Predictability State-Space Modeling & Explainable Algorithmic Finance",
       status: "Institutional Quantitative Systems (Black Thorne Capital Management)",
       strategicMandate:
@@ -166,6 +374,7 @@ export default function PressKitPage() {
       number: "05",
       name: "VinAI Eduverse",
       role: "Founder & Master Facilitator",
+      logoSrc: `${basePath}/logos/vinai.svg`,
       tagline: "Democratizing Frontier AI Systems Literacy & Enterprise Orchestration",
       status: "Scaled Institutional Enablement",
       strategicMandate:
@@ -182,6 +391,7 @@ export default function PressKitPage() {
       number: "06",
       name: "Navkar Poly Print",
       role: "Creative Director",
+      logoSrc: `${basePath}/logos/classess.svg`,
       tagline: "International Brand Systems & Digital Operations for Global Packaging Manufacturing",
       status: "Active Multinational Manufacturing",
       strategicMandate:
@@ -198,6 +408,7 @@ export default function PressKitPage() {
       number: "07",
       name: "Frontier Autonomous Protocol",
       role: "Principal Systems Architect",
+      logoSrc: `${basePath}/logos/smark.svg`,
       tagline: "Next-Generation Autonomous Capital Allocation & Unattended State Machines",
       status: "Stealth R&D (Confidential Protocol)",
       strategicMandate:
@@ -210,19 +421,6 @@ export default function PressKitPage() {
         "Confidential research and deployment horizon scheduled for late 2026 / 2027.",
       techStack: ["Distributed State Machines", "Actuarial Risk Gates", "Rust Runtimes", "Zero-Knowledge Invariants", "Multi-Agent Swarms"],
     },
-  ];
-
-  const affiliatedCompanies = [
-    "Marketplace Simulation Inc",
-    "Jedy Apps (Tel Aviv)",
-    "TheSmarketers",
-    "AI Marketing Labs",
-    "Motilal Oswal Asset Management",
-    "Dhritii AI",
-    "Smark Connect Platform",
-    "Black Thorne Capital Management",
-    "ICFAI Business School (IBS)",
-    "Navkar Poly Print",
   ];
 
   const caseStudies = [
@@ -268,6 +466,8 @@ export default function PressKitPage() {
     {
       title: "Programme Director – AIMS50x",
       org: "ICFAI Business School (IBS), Hyderabad",
+      logo: `${basePath}/logos/ibs-hyderabad.png`,
+      isDarkPng: true,
       description:
         "Designed and led a flagship 3-month program teaching AI in Marketing systems to 450+ MBA students and 30+ Professors across 51 intensive, hands-on sessions.",
       tag: "Academic Leadership",
@@ -275,6 +475,8 @@ export default function PressKitPage() {
     {
       title: "Keynote Speaker",
       org: "JITO International Trade Organisation",
+      logo: `${basePath}/logos/jito.png`,
+      isDarkPng: true,
       description:
         "Addressed 8,000+ individuals on AI Automation in business at a premier global trade and industry conference.",
       tag: "Global Keynote",
@@ -282,6 +484,8 @@ export default function PressKitPage() {
     {
       title: "TEDx Keynote Speaker 2025",
       org: "TEDx",
+      logo: `${basePath}/logos/tedx.svg`,
+      isDarkPng: false,
       description:
         "Delivered keynote on 'AI in Academics'; curated frontier thought leadership and international speakers recognized by Anand Mahindra.",
       tag: "Keynote 2025",
@@ -289,6 +493,8 @@ export default function PressKitPage() {
     {
       title: "Guest Lecturer",
       org: "ICFAI School of Business",
+      logo: `${basePath}/logos/ibs-hyderabad.png`,
+      isDarkPng: true,
       description:
         "Delivered lectures on the real-life applications of AI in marketing, neuroscience, and deterministic business operations (2025).",
       tag: "Guest Faculty",
@@ -296,106 +502,11 @@ export default function PressKitPage() {
     {
       title: "Industry Presence",
       org: "30+ Global Business Conferences",
+      logo: `${basePath}/logos/nasscom.svg`,
+      isDarkPng: false,
       description:
         "Attended 30+ conferences including AAHAR 2025 (Delhi), Plast India (2023-26), IICI (Bangalore), Nasscom Future Forge, DevSparks, and more.",
-      tag: "Summits & Industry",
-    },
-  ];
-
-  const education = [
-    {
-      degree: "B.A. Economics & Finance (2023–2026)",
-      institution: "School of Economics & Finance",
-      highlight: "Valedictorian | Consistently ranked in the Top 10 for 3 consecutive years (CGPA 9.51).",
-      gold: "Gold Medalist – BA Economics and Finance",
-    },
-    {
-      degree: "Actuarial Science (2024–Present)",
-      institution: "Institute of Actuaries of India (IAI)",
-      highlight:
-        "ACET Topper (Distinction, first attempt); Cleared Core Mathematical Papers: CM1 (Actuarial Math), CS1 (Actuarial Stats), CB1 (Business Finance), CB2 (Business Economics).",
-      rank: "AIR 2 in CB1, CB2",
-    },
-    {
-      degree: "Enterprise Risk Management (2023–2026)",
-      institution: "Institute of Risk Management (IRM), UK",
-      highlight:
-        "Enterprise Risk Management Scholar & Practitioner; National Winner in institutional risk modeling and systemic shock absorption.",
-      rank: "National Winner — GOER 2025",
-    },
-    {
-      degree: "Specialized Certification in Macromolecular Engineering",
-      institution: "Indian Institute of Technology (IIT), Roorkee",
-      highlight: "Advanced technical certification in macromolecular and nano-structured polymer systems.",
-    },
-    {
-      degree: "Secondary Education",
-      institution: "St. Andrews High School, Hyderabad",
-      highlight: "School Valedictorian (Accountancy 97/100, Business Studies 99/100).",
-    },
-  ];
-
-  const achievements = {
-    competitiveWins: [
-      "Gold Medalist – BA Economics and Finance",
-      "Champion (Team Lead): Game of Enterprise Risk Management (GOER) 2025",
-      "Champion (Team Lead): PMI Growth Lab Challenge",
-      "Gold Medalist (Team Lead): Inter-College Trading (Loyola College)",
-      "Champions (Team Lead): Finance Case Competition (St. Francis Institute)",
-      "Top 10 Team: Produscope Product Management (IIT Guwahati)",
-      "Gold Medalist: National Applied Science Olympiad (NASO)",
-    ],
-    globalRecognition: [
-      "Winner – Market Place Simulation 2024 (Global Top 10% Balanced Scorecard)",
-      "Young Actuarial World Cup Semi-Finalist",
-      "Bloomberg Trading Challenge Top 5% Teams (2024 and 2025)",
-      "Equity Research Challenge",
-    ],
-    nationalRankings: [
-      "AIR 1: Future Economist Challenge (FEC)",
-      "AIR 2: CB1, CB2 (Institute of Actuaries of India)",
-      "AIR 1: Money101 Contest (FamPay)",
-      "AIR 5: Mergers & Acquisitions Case Competition (IIT Guwahati)",
-    ],
-    honors: [
-      "Nominated for India 30 Under 30",
-      "Featured in EconShastra (Premier Economics Publication of the IIMs, June 2024)",
-    ],
-  };
-
-  const competencies = [
-    {
-      area: "Economics & Finance",
-      items: ["Micro/Macroeconomics", "Corporate Finance", "Financial Accounting", "Valuation Forensics", "Market Microstructure"],
-    },
-    {
-      area: "Risk & Actuarial",
-      items: [
-        "Risk Modelling",
-        "Life Contingencies",
-        "Game Theory",
-        "Stochastic Processes",
-        "Enterprise Risk Management (ERM)",
-      ],
-    },
-    {
-      area: "Engineering & Tech",
-      items: [
-        "Macromolecular Engineering",
-        "Nano-Structured Polymers",
-        "Frontier AI Infrastructure",
-        "Multi-Agent Orchestration",
-        "Tokenomics Governance",
-      ],
-    },
-    {
-      area: "Professional Certifications",
-      items: [
-        "SEBI Registered Equity Research Analyst",
-        "Bloomberg Market Concepts (BMC)",
-        "Financial Markets (Yale University / Coursera)",
-        "UNCC Climate Change Certification",
-      ],
+      tag: "Executive Presence",
     },
   ];
 
@@ -409,16 +520,20 @@ export default function PressKitPage() {
   };
 
   return (
-    <main className="w-full min-h-screen bg-black text-zinc-100 flex flex-col items-center selection:bg-zinc-800 selection:text-white antialiased">
+    <main className="w-full min-h-screen bg-black text-zinc-100 flex flex-col items-center selection:bg-zinc-800 selection:text-white antialiased overflow-x-hidden">
       {/* Full Screen Desktop Width with Apple-like Spacing */}
-      <div className="w-full max-w-7xl px-4 sm:px-8 lg:px-12 py-8 sm:py-16 space-y-16 lg:space-y-24">
+      <div className="w-full max-w-7xl px-4 sm:px-8 lg:px-12 py-8 sm:py-16 space-y-16 lg:space-y-20">
         
         {/* Floating Apple-like Top Bar */}
-        <header className="sticky top-6 z-50 backdrop-blur-xl bg-zinc-950/80 border border-zinc-800/80 rounded-full px-5 sm:px-7 py-3 flex items-center justify-between shadow-2xl shadow-black/80 transition-all duration-300">
-          <div className="flex items-center gap-3.5">
-            <div className="w-8 h-8 rounded-full bg-zinc-900 border border-zinc-700/80 flex items-center justify-center font-mono font-bold text-xs text-zinc-100">
+        <header className="sticky top-6 z-40 backdrop-blur-xl bg-zinc-950/80 border border-zinc-800/80 rounded-full px-4 sm:px-7 py-3 flex items-center justify-between shadow-2xl shadow-black/80 transition-all duration-300">
+          <div className="flex items-center gap-3">
+            <button
+              onClick={handleVjClick}
+              title="Vinay Jain · Tap 5 times for Unicorn Mode"
+              className="w-8 h-8 rounded-full bg-zinc-900 border border-zinc-700/80 flex items-center justify-center font-mono font-bold text-xs text-zinc-100 hover:scale-105 active:scale-95 transition-all cursor-pointer select-none"
+            >
               VJ
-            </div>
+            </button>
             <div className="flex items-center gap-2">
               <span className="text-sm font-semibold tracking-tight text-white">Vinay Jain</span>
               <span className="hidden sm:inline-block text-[11px] font-mono text-zinc-500 uppercase">
@@ -427,24 +542,35 @@ export default function PressKitPage() {
             </div>
           </div>
 
-          <div className="flex items-center gap-2.5">
+          <div className="flex items-center gap-2 sm:gap-2.5">
+            {/* Terminal CLI Trigger (Easter Egg 1) */}
+            <button
+              onClick={() => setIsTerminalOpen(true)}
+              className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-mono bg-zinc-900/90 hover:bg-zinc-800 text-zinc-300 hover:text-white border border-zinc-800 transition-all duration-200 cursor-pointer"
+              title="Open Executive CLI (Cmd+K)"
+            >
+              <Terminal className="w-3.5 h-3.5 text-zinc-400" />
+              <span className="hidden md:inline">CLI</span>
+              <kbd className="hidden lg:inline px-1.5 py-0.5 text-[9px] bg-black border border-zinc-800 rounded text-zinc-400">⌘K</kbd>
+            </button>
+
             <a
               href="#ventures-architecture"
-              className="hidden md:inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-full text-xs font-medium text-zinc-400 hover:text-white transition-colors"
+              className="hidden lg:inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-full text-xs font-medium text-zinc-400 hover:text-white transition-colors"
             >
               <span>Architecture</span>
             </a>
             <a
               href="#media-feature"
-              className="hidden md:inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-full text-xs font-medium text-zinc-400 hover:text-white transition-colors"
+              className="hidden sm:inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-full text-xs font-medium text-zinc-400 hover:text-white transition-colors"
             >
-              <span>Press Coverage</span>
+              <span>Press</span>
             </a>
             <a
               href={pressKitLinks.portfolio}
               target="_blank"
               rel="noreferrer"
-              className="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-full text-xs font-medium bg-zinc-900 hover:bg-zinc-800 text-zinc-300 hover:text-white border border-zinc-800 transition-all duration-200"
+              className="hidden md:inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-full text-xs font-medium bg-zinc-900 hover:bg-zinc-800 text-zinc-300 hover:text-white border border-zinc-800 transition-all duration-200"
             >
               <span>Portfolio</span>
               <ExternalLink className="w-3 h-3 text-zinc-400" />
@@ -453,7 +579,7 @@ export default function PressKitPage() {
               href={pressKitLinks.pressKitPdf}
               target="_blank"
               rel="noreferrer"
-              className="inline-flex items-center gap-1.5 px-4 py-1.5 rounded-full text-xs font-semibold bg-white hover:bg-zinc-200 text-black transition-all duration-200 shadow-sm"
+              className="inline-flex items-center gap-1.5 px-3.5 sm:px-4 py-1.5 rounded-full text-xs font-semibold bg-white hover:bg-zinc-200 text-black transition-all duration-200 shadow-sm"
             >
               <span>Press Kit PDF</span>
               <ArrowUpRight className="w-3.5 h-3.5" />
@@ -461,10 +587,31 @@ export default function PressKitPage() {
           </div>
         </header>
 
+        {/* UNICORN MODE AMBIENT HUD BANNER (Easter Egg 2) */}
+        {unicornMode && (
+          <div className="w-full p-3.5 rounded-2xl bg-zinc-950 border border-zinc-700/80 text-xs font-mono flex items-center justify-between gap-4 shadow-2xl transition-all">
+            <div className="flex items-center gap-3 overflow-hidden">
+              <span className="w-2 h-2 rounded-full bg-white shadow-[0_0_10px_#ffffff] shrink-0" />
+              <span className="text-white font-bold tracking-wider truncate">
+                [SYSTEM: UNICORN CORE ACTIVE]
+              </span>
+              <span className="hidden sm:inline text-zinc-400 truncate">
+                · -95% CONTEXT PRUNING · ZERO-HALLUCINATION GATES · $850K PIPELINE/24H
+              </span>
+            </div>
+            <button
+              onClick={() => setUnicornMode(false)}
+              className="text-zinc-500 hover:text-white text-[11px] font-mono underline shrink-0 cursor-pointer"
+            >
+              Deactivate HUD
+            </button>
+          </div>
+        )}
+
         {/* Hero Section */}
         <section className="space-y-8 pt-2">
           <div className="inline-flex items-center gap-2.5 px-3.5 py-1.5 rounded-full bg-zinc-900/90 border border-zinc-800 text-xs font-mono text-zinc-400">
-            <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
+            <span className="w-2 h-2 rounded-full bg-zinc-200 shadow-[0_0_6px_rgba(255,255,255,0.4)]" />
             <span className="tracking-wide uppercase text-[11px]">Official Institutional Dossier &amp; Press Kit</span>
           </div>
 
@@ -477,26 +624,26 @@ export default function PressKitPage() {
             </p>
           </div>
 
-          {/* TEDx BANNER IMAGE - FIXED: FOCUSING TOP PART (object-[center_top] with generous height so top screen and speaker are never cropped) */}
+          {/* TEDx BANNER IMAGE - FIXED: FOCUSING TOP PART (objectPosition: "center 0%") */}
           <div className="relative rounded-3xl overflow-hidden border border-zinc-800/80 bg-zinc-950 shadow-2xl group">
-            <div className="w-full h-[380px] sm:h-[480px] md:h-[580px] lg:h-[660px] overflow-hidden relative">
+            <div className="w-full h-[320px] sm:h-[440px] md:h-[540px] lg:h-[640px] overflow-hidden relative">
               <img
                 src={`${basePath}/images/tedx-banner.jpeg`}
                 alt="Vinay Jain TEDx Keynote Speaker Stage"
-                className="w-full h-full object-cover object-top group-hover:scale-[1.02] transition-transform duration-700 ease-out"
+                className="w-full h-full object-cover group-hover:scale-[1.01] transition-transform duration-700 ease-out"
                 style={{ objectPosition: "center 0%" }}
               />
-              {/* Subtle Bottom Vignette Only - Top is 100% Crisp and Visible */}
               <div className="absolute inset-0 bg-gradient-to-t from-black via-black/30 to-transparent pointer-events-none" />
             </div>
 
-            {/* Banner Caption & Status Pill */}
-            <div className="absolute bottom-4 sm:bottom-6 left-4 sm:left-8 right-4 sm:right-8 flex flex-col sm:flex-row sm:items-end justify-between gap-4">
-              <div className="space-y-1 text-left">
-                <span className="px-3 py-1 rounded-full bg-red-950/80 border border-red-500/30 text-red-300 text-xs font-mono inline-flex items-center gap-1.5 backdrop-blur-md">
-                  <Mic className="w-3.5 h-3.5 text-red-400" />
-                  <span>TEDx Keynote Speaker 2025</span>
-                </span>
+            <div className="absolute bottom-4 sm:bottom-8 left-4 sm:left-8 right-4 sm:right-8 flex flex-col sm:flex-row sm:items-end justify-between gap-4 pointer-events-auto">
+              <div className="space-y-1.5 max-w-2xl">
+                <div className="flex items-center gap-2">
+                  <span className="px-3 py-1 rounded-full bg-zinc-900/90 border border-zinc-750 text-zinc-200 text-xs font-mono inline-flex items-center gap-1.5 backdrop-blur-md">
+                    <Mic className="w-3.5 h-3.5 text-zinc-300" />
+                    <span>TEDx Keynote Speaker · 2025</span>
+                  </span>
+                </div>
                 <h3 className="text-lg sm:text-2xl font-bold text-white tracking-tight drop-shadow-md">
                   &ldquo;AI in Academics&rdquo;
                 </h3>
@@ -510,10 +657,10 @@ export default function PressKitPage() {
                   href={`${basePath}/images/tedx-banner.jpeg`}
                   target="_blank"
                   rel="noreferrer"
-                  className="px-3.5 py-1.5 rounded-full bg-black/60 hover:bg-black/90 backdrop-blur-md border border-white/20 text-white text-xs font-mono transition-colors flex items-center gap-1.5"
+                  className="px-3.5 py-1.5 rounded-full bg-black/70 hover:bg-black/90 backdrop-blur-md border border-white/20 text-white text-xs font-mono transition-colors flex items-center gap-1.5"
                 >
                   <Maximize2 className="w-3.5 h-3.5" />
-                  <span>View Full Stage</span>
+                  <span>View Stage</span>
                 </a>
               </div>
             </div>
@@ -532,73 +679,130 @@ export default function PressKitPage() {
                     <Sparkles className="w-3.5 h-3.5 text-zinc-300" />
                     <span>Executive Introduction &amp; Institutional Profile</span>
                   </span>
-                  <span className="text-[11px] font-mono text-emerald-400 flex items-center gap-1.5">
+                  <span className="text-[11px] font-mono text-zinc-300 flex items-center gap-1.5">
                     <ShieldCheck className="w-3.5 h-3.5" />
-                    <span>Verified Credentials</span>
+                    <span>Verified Institutional Standing</span>
                   </span>
                 </div>
 
-                <p className="text-base sm:text-lg lg:text-xl text-zinc-200 leading-relaxed font-normal">
+                <p className="text-sm sm:text-base text-zinc-300 leading-relaxed font-normal">
                   Vinay Jain is an enterprise systems architect and technology executive building autonomous AI infrastructure for the world&apos;s first one-person AI unicorn. Recognised by <strong className="text-white font-semibold">Anand Mahindra</strong> for curating frontier thought leadership, Vinay is a <strong className="text-white font-semibold">TEDx Keynote Speaker</strong> on applied AI in academics, an <strong className="text-white font-semibold">Actuarial Science distinction topper (Institute of Actuaries of India – IAI)</strong>, a national champion in Enterprise Risk Management (<strong className="text-white font-semibold">Institute of Risk Management – IRM UK</strong>), and a certified <strong className="text-white font-semibold">Macromolecular Engineer from IIT Roorkee</strong>. Operating at the frontier of stochastic risk modeling and unattended agentic systems, he serves as <strong className="text-white font-semibold">Guest Lecturer</strong> and <strong className="text-white font-semibold">Programme Director</strong> at ICFAI School of Business—directing flagship programs for 450+ MBA candidates and 30+ professors—while architecting autonomous enterprise pipelines that have delivered over <strong className="text-white font-semibold">$850,000 in pipeline</strong> for global clients.
                 </p>
+
+                {/* Direct Executive Contact Matrix */}
+                <div className="pt-4 border-t border-zinc-900/80 flex flex-wrap items-center gap-3 text-xs font-mono">
+                  <button
+                    onClick={() => handleCopy(pressKitLinks.email, "email")}
+                    className="px-3.5 py-1.5 rounded-full bg-zinc-900 hover:bg-zinc-800 border border-zinc-800 text-zinc-300 hover:text-white transition-colors inline-flex items-center gap-1.5 cursor-pointer"
+                  >
+                    <Mail className="w-3.5 h-3.5 text-zinc-400" />
+                    <span>{pressKitLinks.email}</span>
+                    {copiedField === "email" ? (
+                      <Check className="w-3.5 h-3.5 text-zinc-200 ml-1" />
+                    ) : (
+                      <Copy className="w-3 h-3 text-zinc-500 ml-1" />
+                    )}
+                  </button>
+
+                  <button
+                    onClick={() => handleCopy(pressKitLinks.phone, "phone")}
+                    className="px-3.5 py-1.5 rounded-full bg-zinc-900 hover:bg-zinc-800 border border-zinc-800 text-zinc-300 hover:text-white transition-colors inline-flex items-center gap-1.5 cursor-pointer"
+                  >
+                    <Phone className="w-3.5 h-3.5 text-zinc-400" />
+                    <span>+91 {pressKitLinks.phone}</span>
+                    {copiedField === "phone" ? (
+                      <Check className="w-3.5 h-3.5 text-zinc-200 ml-1" />
+                    ) : (
+                      <Copy className="w-3 h-3 text-zinc-500 ml-1" />
+                    )}
+                  </button>
+
+                  <a
+                    href={pressKitLinks.linkedin}
+                    target="_blank"
+                    rel="noreferrer"
+                    className="px-3.5 py-1.5 rounded-full bg-zinc-900 hover:bg-zinc-800 border border-zinc-800 text-zinc-300 hover:text-white transition-colors inline-flex items-center gap-1.5"
+                  >
+                    <LinkedinIcon className="w-3.5 h-3.5 text-zinc-400" />
+                    <span>LinkedIn</span>
+                    <ArrowUpRight className="w-3 h-3 text-zinc-500" />
+                  </a>
+
+                  <span className="px-3.5 py-1.5 rounded-full bg-zinc-900/60 border border-zinc-850 text-zinc-400 text-xs inline-flex items-center gap-1.5">
+                    <MapPin className="w-3.5 h-3.5 text-zinc-500" />
+                    <span>{pressKitLinks.location}</span>
+                  </span>
+                </div>
               </div>
 
-              {/* Quick Contact & Verified Identity Strip */}
-              <div className="flex flex-wrap items-center gap-2.5 text-xs font-mono text-zinc-400">
-                <div className="flex items-center gap-1.5 px-3.5 py-2 rounded-2xl bg-zinc-950 border border-zinc-800">
-                  <MapPin className="w-3.5 h-3.5 text-zinc-500" />
-                  <span>{pressKitLinks.location}</span>
+              {/* Verified Press Bios Switcher */}
+              <div className="p-6 rounded-3xl bg-zinc-950/70 border border-zinc-800/80 space-y-4">
+                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-zinc-900 pb-3">
+                  <div>
+                    <span className="text-[11px] font-mono uppercase tracking-wider text-zinc-400">
+                      Standard Press Bios
+                    </span>
+                    <span className="text-xs text-zinc-500 block">
+                      Approved copy for speaker introductions, conference brochures &amp; media
+                    </span>
+                  </div>
+
+                  {/* Tabs */}
+                  <div className="flex items-center gap-1 bg-zinc-900 p-1 rounded-2xl border border-zinc-800">
+                    <button
+                      onClick={() => setActiveBioTab("short50")}
+                      className={`px-3 py-1 rounded-xl text-xs font-mono transition-all cursor-pointer ${
+                        activeBioTab === "short50"
+                          ? "bg-white text-black font-semibold shadow-sm"
+                          : "text-zinc-400 hover:text-zinc-200"
+                      }`}
+                    >
+                      50 Words
+                    </button>
+                    <button
+                      onClick={() => setActiveBioTab("standard150")}
+                      className={`px-3 py-1 rounded-xl text-xs font-mono transition-all cursor-pointer ${
+                        activeBioTab === "standard150"
+                          ? "bg-white text-black font-semibold shadow-sm"
+                          : "text-zinc-400 hover:text-zinc-200"
+                      }`}
+                    >
+                      150 Words
+                    </button>
+                    <button
+                      onClick={() => setActiveBioTab("comprehensive500")}
+                      className={`px-3 py-1 rounded-xl text-xs font-mono transition-all cursor-pointer ${
+                        activeBioTab === "comprehensive500"
+                          ? "bg-white text-black font-semibold shadow-sm"
+                          : "text-zinc-400 hover:text-zinc-200"
+                      }`}
+                    >
+                      500 Words
+                    </button>
+                  </div>
                 </div>
 
-                <button
-                  onClick={() => handleCopy(pressKitLinks.email, "email")}
-                  className="flex items-center gap-1.5 px-3.5 py-2 rounded-2xl bg-zinc-950 hover:bg-zinc-900 border border-zinc-800 text-zinc-300 hover:text-white transition-all duration-200"
-                  title="Click to copy email address"
-                >
-                  <Mail className="w-3.5 h-3.5 text-zinc-500" />
-                  <span>{pressKitLinks.email}</span>
-                  {copiedField === "email" ? (
-                    <Check className="w-3.5 h-3.5 text-emerald-400 ml-1" />
-                  ) : (
-                    <Copy className="w-3.5 h-3.5 text-zinc-600 ml-1" />
-                  )}
-                </button>
-
-                <button
-                  onClick={() => handleCopy(pressKitLinks.phone, "phone")}
-                  className="flex items-center gap-1.5 px-3.5 py-2 rounded-2xl bg-zinc-950 hover:bg-zinc-900 border border-zinc-800 text-zinc-300 hover:text-white transition-all duration-200"
-                  title="Click to copy phone number"
-                >
-                  <Phone className="w-3.5 h-3.5 text-zinc-500" />
-                  <span>{pressKitLinks.phone}</span>
-                  {copiedField === "phone" ? (
-                    <Check className="w-3.5 h-3.5 text-emerald-400 ml-1" />
-                  ) : (
-                    <Copy className="w-3.5 h-3.5 text-zinc-600 ml-1" />
-                  )}
-                </button>
-
-                <a
-                  href={pressKitLinks.linkedin}
-                  target="_blank"
-                  rel="noreferrer"
-                  className="flex items-center gap-1.5 px-3.5 py-2 rounded-2xl bg-zinc-950 hover:bg-zinc-900 border border-zinc-800 text-zinc-300 hover:text-white transition-all duration-200"
-                >
-                  <LinkedinIcon className="w-3.5 h-3.5 text-zinc-500" />
-                  <span>LinkedIn</span>
-                  <ExternalLink className="w-3 h-3 text-zinc-500 ml-0.5" />
-                </a>
-
-                <a
-                  href={pressKitLinks.portfolio}
-                  target="_blank"
-                  rel="noreferrer"
-                  className="flex items-center gap-1.5 px-3.5 py-2 rounded-2xl bg-zinc-950 hover:bg-zinc-900 border border-zinc-800 text-zinc-300 hover:text-white transition-all duration-200"
-                >
-                  <Globe className="w-3.5 h-3.5 text-zinc-500" />
-                  <span>Framer Portfolio</span>
-                  <ExternalLink className="w-3 h-3 text-zinc-500 ml-0.5" />
-                </a>
+                <div className="relative">
+                  <div className="text-xs sm:text-sm text-zinc-300 font-normal leading-relaxed whitespace-pre-line bg-zinc-900/40 p-4 rounded-2xl border border-zinc-850">
+                    {pressBios[activeBioTab]}
+                  </div>
+                  <button
+                    onClick={() => handleCopy(pressBios[activeBioTab], `bio-${activeBioTab}`)}
+                    className="mt-3 px-3 py-1.5 rounded-xl bg-zinc-900 hover:bg-zinc-800 border border-zinc-750 text-zinc-300 hover:text-white text-xs font-mono transition-colors inline-flex items-center gap-1.5 cursor-pointer"
+                  >
+                    {copiedField === `bio-${activeBioTab}` ? (
+                      <>
+                        <Check className="w-3.5 h-3.5 text-zinc-200" />
+                        <span>Copied Bio</span>
+                      </>
+                    ) : (
+                      <>
+                        <Copy className="w-3.5 h-3.5 text-zinc-400" />
+                        <span>Copy Active Bio</span>
+                      </>
+                    )}
+                  </button>
+                </div>
               </div>
             </div>
 
@@ -629,7 +833,7 @@ export default function PressKitPage() {
               <a
                 href={`${basePath}/images/vinay-jain-portrait.jpeg`}
                 download="Vinay_Jain_Executive_Portrait.jpeg"
-                className="w-full py-2.5 px-4 rounded-2xl bg-white hover:bg-zinc-200 text-black text-xs font-semibold uppercase tracking-wider transition-all duration-200 flex items-center justify-center gap-2 shadow-md"
+                className="w-full py-2.5 px-4 rounded-2xl bg-white hover:bg-zinc-200 text-black text-xs font-semibold uppercase tracking-wider transition-all duration-200 flex items-center justify-center gap-2 shadow-md cursor-pointer"
               >
                 <Download className="w-4 h-4" />
                 <span>Download Portrait (JPEG)</span>
@@ -673,6 +877,122 @@ export default function PressKitPage() {
           </div>
         </section>
 
+        {/* INSTITUTIONAL AFFILIATIONS & GLOBAL ENTERPRISE DEPLOYMENTS */}
+        <section className="space-y-6 pt-2">
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-zinc-900 pb-4">
+            <div>
+              <div className="flex items-center gap-2">
+                <span className="w-1.5 h-1.5 rounded-full bg-zinc-300" />
+                <span className="text-[11px] font-mono uppercase tracking-widest text-zinc-400">
+                  Institutional Affiliations &amp; Enterprise Deployments
+                </span>
+              </div>
+              <p className="text-xs text-zinc-400 mt-1">
+                Academic Residencies, Global Keynotes, Certified Quantitative Bodies &amp; Enterprise AI Systems
+              </p>
+            </div>
+            <span className="text-[10px] font-mono text-zinc-600 uppercase tracking-widest shrink-0">
+              Verified Logos
+            </span>
+          </div>
+
+          <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 gap-3 sm:gap-4">
+            {institutionalLogos.map((item, idx) => (
+              <div
+                key={idx}
+                className="p-4 sm:p-5 rounded-2xl bg-zinc-950/70 border border-zinc-800/80 hover:border-zinc-700 hover:bg-zinc-900/40 transition-all duration-200 flex flex-col items-center justify-between gap-3 text-center group min-h-[110px]"
+              >
+                <div className="flex-1 flex items-center justify-center w-full px-2">
+                  <img
+                    src={item.src}
+                    alt={`${item.name} logo`}
+                    className={`${item.isDarkPng ? "logo-mono-dark" : "logo-mono"} max-h-8 max-w-[110px] object-contain transition-all`}
+                  />
+                </div>
+                <div className="space-y-0.5 w-full">
+                  <div className="text-[11px] font-semibold text-zinc-300 group-hover:text-white transition-colors truncate">
+                    {item.name}
+                  </div>
+                  <div className="text-[9px] font-mono text-zinc-500 uppercase tracking-wider line-clamp-1">
+                    {item.role}
+                  </div>
+                </div>
+              </div>
+            ))}
+          </div>
+        </section>
+
+        {/* INTERACTIVE QUANT EASTER EGG: TOKEN OPTIMIZATION SIMULATOR */}
+        <section className="p-6 sm:p-8 rounded-3xl bg-zinc-950/80 border border-zinc-800/80 space-y-6 shadow-xl">
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-zinc-900 pb-4">
+            <div className="space-y-1">
+              <div className="flex items-center gap-2">
+                <Sliders className="w-3.5 h-3.5 text-zinc-400" />
+                <span className="text-[11px] font-mono uppercase tracking-widest text-zinc-400">
+                  Interactive Architecture Benchmark · Smark Connect
+                </span>
+              </div>
+              <h3 className="text-base sm:text-lg font-bold text-white tracking-tight">
+                Simulate Enterprise Context Window Compression
+              </h3>
+            </div>
+            <div className="flex items-center gap-2">
+              <span className="px-2.5 py-1 rounded-full text-[10px] font-mono bg-zinc-900 border border-zinc-800 text-zinc-300">
+                -95% Token Slashing Model
+              </span>
+            </div>
+          </div>
+
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center">
+            <div className="lg:col-span-7 space-y-4">
+              <div className="flex justify-between items-center text-xs font-mono">
+                <span className="text-zinc-400">Monthly Enterprise Token Volume:</span>
+                <span className="text-white font-bold text-sm">{(tokenInput / 1000000).toFixed(1)}M Tokens</span>
+              </div>
+              <input
+                type="range"
+                min="500000"
+                max="20000000"
+                step="500000"
+                value={tokenInput}
+                onChange={(e) => setTokenInput(Number(e.target.value))}
+                className="w-full accent-white bg-zinc-900 h-2 rounded-lg cursor-pointer"
+              />
+              <div className="flex justify-between text-[10px] font-mono text-zinc-600">
+                <span>0.5M Tokens (Seed)</span>
+                <span>10.0M Tokens (Growth)</span>
+                <span>20.0M Tokens (Enterprise)</span>
+              </div>
+              <p className="text-xs text-zinc-400 leading-relaxed pt-1">
+                Based on production algorithms deployed on Smark Connect: multi-account prompt loads are pruned from massive context windows down to high-signal vectors, eliminating token deadweight without losing transactional state.
+              </p>
+            </div>
+
+            <div className="lg:col-span-5 grid grid-cols-2 gap-3 p-4 rounded-2xl bg-zinc-900/40 border border-zinc-800/80">
+              <div className="p-3 rounded-xl bg-zinc-950/80 border border-zinc-800/60">
+                <span className="text-[10px] font-mono uppercase text-zinc-500 block mb-1">Compressed Footprint</span>
+                <span className="text-lg font-mono font-bold text-white">{((tokenInput * 0.05) / 1000).toLocaleString()}k</span>
+                <span className="text-[9px] font-mono text-zinc-400 block mt-0.5">-95.0% Context</span>
+              </div>
+              <div className="p-3 rounded-xl bg-zinc-950/80 border border-zinc-800/60">
+                <span className="text-[10px] font-mono uppercase text-zinc-500 block mb-1">Tokens Saved</span>
+                <span className="text-lg font-mono font-bold text-white">{((tokenInput * 0.95) / 1000000).toFixed(2)}M</span>
+                <span className="text-[9px] font-mono text-zinc-400 block mt-0.5">Per Execution Cycle</span>
+              </div>
+              <div className="p-3 rounded-xl bg-zinc-950/80 border border-zinc-800/60">
+                <span className="text-[10px] font-mono uppercase text-zinc-500 block mb-1">Est. Compute Savings</span>
+                <span className="text-lg font-mono font-bold text-white">${(((tokenInput * 0.95) / 1000000) * 15).toFixed(0)}</span>
+                <span className="text-[9px] font-mono text-zinc-400 block mt-0.5">Blended API Rates</span>
+              </div>
+              <div className="p-3 rounded-xl bg-zinc-950/80 border border-zinc-800/60">
+                <span className="text-[10px] font-mono uppercase text-zinc-500 block mb-1">Deterministic Audit</span>
+                <span className="text-lg font-mono font-bold text-white">100.0%</span>
+                <span className="text-[9px] font-mono text-zinc-400 block mt-0.5">Zero Hallucinations</span>
+              </div>
+            </div>
+          </div>
+        </section>
+
         {/* VENTURES AND SYSTEMS ARCHITECTURE - HIGHLY DESCRIPTIVE EDITORIAL PROSPECTUS (NOT CARDS FORMATTING) */}
         <section id="ventures-architecture" className="space-y-12 scroll-mt-24 pt-4">
           <div className="border-b border-zinc-900 pb-6">
@@ -691,402 +1011,168 @@ export default function PressKitPage() {
             </p>
           </div>
 
-          {/* Deep Linear Editorial Flow (NOT in cards formatting) */}
-          <div className="space-y-16 lg:space-y-20">
-            {ventures.map((venture) => (
+          {/* Sequential Descriptive Monograph Entries */}
+          <div className="space-y-16 lg:space-y-24">
+            {ventures.map((v, i) => (
               <article
-                key={venture.number}
-                className="border-b border-zinc-900/90 pb-16 last:border-b-0 space-y-6 text-left"
+                key={i}
+                className="p-6 sm:p-10 lg:p-12 rounded-3xl bg-zinc-950 border border-zinc-800/80 space-y-8 shadow-2xl relative"
               >
-                {/* Header Row */}
-                <div className="flex flex-col md:flex-row md:items-baseline justify-between gap-3 border-b border-zinc-900/60 pb-4">
-                  <div className="space-y-1">
-                    <div className="flex items-center gap-3">
-                      <span className="text-xs font-mono font-bold text-zinc-500 uppercase tracking-widest">
-                        {venture.number}
-                      </span>
-                      <span className="text-xs font-mono text-emerald-400">
-                        {venture.status}
-                      </span>
+                {/* Header: Venture Identity with Official Monochrome Logo */}
+                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-zinc-900 pb-6">
+                  <div className="flex items-center gap-4">
+                    <div className="w-12 h-12 rounded-2xl bg-zinc-900/80 border border-zinc-800 flex items-center justify-center p-2.5 shrink-0">
+                      <img
+                        src={v.logoSrc}
+                        alt={`${v.name} Logo`}
+                        className="logo-mono w-full h-full object-contain"
+                      />
                     </div>
-                    <h3 className="text-2xl sm:text-3xl font-bold text-white tracking-tight mt-1">
-                      {venture.name}
-                    </h3>
-                    <div className="text-sm sm:text-base font-medium text-zinc-300">
-                      {venture.role}
+                    <div>
+                      <div className="flex items-center gap-2.5 mb-1">
+                        <span className="font-mono text-xs text-zinc-500 font-bold tracking-widest">
+                          {v.number}
+                        </span>
+                        <span className="px-2.5 py-0.5 rounded-full text-[10px] font-mono tracking-wider uppercase bg-zinc-900 border border-zinc-800 text-zinc-300">
+                          {v.role}
+                        </span>
+                      </div>
+                      <h3 className="text-2xl sm:text-3xl font-bold tracking-tight text-white">
+                        {v.name}
+                      </h3>
                     </div>
                   </div>
 
-                  <div className="text-xs font-mono text-zinc-400 italic md:text-right max-w-md">
-                    &ldquo;{venture.tagline}&rdquo;
+                  <div className="flex items-center gap-2">
+                    <span className="text-xs font-mono text-zinc-300">
+                      {v.status}
+                    </span>
                   </div>
                 </div>
 
-                {/* Narrative Sections */}
-                <div className="space-y-6 text-sm sm:text-base leading-relaxed text-zinc-300">
+                <div className="text-base sm:text-lg font-medium text-zinc-200 italic border-l-2 border-zinc-700 pl-4 py-1">
+                  &ldquo;{v.tagline}&rdquo;
+                </div>
+
+                {/* Deep Descriptive Prospectus Blocks */}
+                <div className="space-y-8 text-sm sm:text-base leading-relaxed text-zinc-300">
                   
                   {/* Strategic Mandate */}
-                  <div>
-                    <h4 className="text-xs font-mono uppercase tracking-widest text-zinc-500 mb-1.5">
-                      Strategic Mandate &amp; Executive Focus
+                  <div className="space-y-2">
+                    <h4 className="text-xs font-mono uppercase tracking-widest text-zinc-400">
+                      I. Strategic Mandate &amp; Executive Thesis
                     </h4>
                     <p className="text-zinc-300 font-normal">
-                      {venture.strategicMandate}
+                      {v.strategicMandate}
                     </p>
                   </div>
 
                   {/* Structural Problem */}
-                  <div className="bg-zinc-950/60 border-l-2 border-zinc-700 pl-4 sm:pl-6 py-2 rounded-r-2xl">
-                    <h4 className="text-xs font-mono uppercase tracking-widest text-zinc-400 mb-1.5">
-                      The Structural Industry Problem
+                  <div className="space-y-2">
+                    <h4 className="text-xs font-mono uppercase tracking-widest text-zinc-400">
+                      II. Structural Inefficiency &amp; Market Vulnerability
                     </h4>
-                    <p className="text-zinc-400 text-sm leading-relaxed">
-                      {venture.structuralProblem}
+                    <p className="text-zinc-400 font-normal">
+                      {v.structuralProblem}
                     </p>
                   </div>
 
                   {/* Systems Architecture & Technical Blueprint */}
-                  <div>
-                    <h4 className="text-xs font-mono uppercase tracking-widest text-zinc-500 mb-1.5">
-                      Systems Architecture &amp; Engineering Blueprint
-                    </h4>
-                    <p className="text-zinc-300">
-                      {venture.architectureAndExecution}
+                  <div className="p-6 rounded-2xl bg-zinc-900/40 border border-zinc-800/80 space-y-3">
+                    <div className="flex items-center gap-2 text-zinc-300">
+                      <Cpu className="w-4 h-4 text-zinc-400" />
+                      <span className="text-xs font-mono uppercase tracking-widest font-semibold text-white">
+                        III. Technical Blueprint &amp; System Execution
+                      </span>
+                    </div>
+                    <p className="text-sm text-zinc-300 leading-relaxed font-normal">
+                      {v.architectureAndExecution}
                     </p>
                   </div>
 
                   {/* Quantified Commercial Impact */}
-                  <div className="p-4 sm:p-5 rounded-2xl bg-zinc-950 border border-zinc-800/80">
-                    <h4 className="text-xs font-mono uppercase tracking-widest text-emerald-400 mb-1 flex items-center gap-1.5">
-                      <ShieldCheck className="w-3.5 h-3.5" />
-                      <span>Audited Commercial Impact &amp; Deliverables</span>
+                  <div className="space-y-2">
+                    <h4 className="text-xs font-mono uppercase tracking-widest text-zinc-300 mb-1 flex items-center gap-1.5">
+                      <TrendingUp className="w-3.5 h-3.5 text-zinc-400" />
+                      <span>IV. Audited Production Deliverables &amp; Capital Leverage</span>
                     </h4>
-                    <p className="text-sm text-zinc-200 font-medium">
-                      {venture.commercialImpact}
+                    <p className="text-zinc-300 font-normal">
+                      {v.commercialImpact}
                     </p>
                   </div>
+                </div>
 
-                  {/* Technical Stack Tags */}
-                  <div>
-                    <h4 className="text-xs font-mono uppercase tracking-widest text-zinc-500 mb-2 flex items-center gap-1.5">
-                      <Cpu className="w-3.5 h-3.5 text-zinc-400" />
-                      <span>Deployed Technical Stack &amp; Protocols</span>
-                    </h4>
-                    <div className="flex flex-wrap gap-2">
-                      {venture.techStack.map((tech, idx) => (
-                        <span
-                          key={idx}
-                          className="px-3 py-1 rounded-xl bg-zinc-900 border border-zinc-800 text-xs font-mono text-zinc-300"
-                        >
-                          {tech}
-                        </span>
-                      ))}
-                    </div>
-                  </div>
+                {/* Production Technology Stack */}
+                <div className="pt-6 border-t border-zinc-900 flex flex-wrap items-center gap-2">
+                  <span className="text-xs font-mono text-zinc-500 mr-2 flex items-center gap-1">
+                    <Layers className="w-3 h-3 text-zinc-500" />
+                    <span>Stack:</span>
+                  </span>
+                  {v.techStack.map((tech, idx) => (
+                    <span
+                      key={idx}
+                      className="px-2.5 py-1 rounded-full text-xs font-mono bg-zinc-900/80 border border-zinc-800 text-zinc-400"
+                    >
+                      {tech}
+                    </span>
+                  ))}
                 </div>
               </article>
             ))}
           </div>
         </section>
 
-        {/* Affiliated Companies & Client Ecosystem */}
-        <section className="p-6 sm:p-8 rounded-3xl bg-zinc-950 border border-zinc-800/80 space-y-4">
-          <div className="flex items-center justify-between border-b border-zinc-900 pb-3">
-            <span className="text-[11px] font-mono uppercase tracking-widest text-zinc-400 flex items-center gap-2">
-              <Building className="w-3.5 h-3.5 text-zinc-500" />
-              <span>Affiliated With Companies &amp; Client Ecosystem</span>
-            </span>
-            <span className="text-[11px] font-mono text-zinc-500">Global Coverage</span>
-          </div>
-
-          <div className="flex flex-wrap gap-2.5">
-            {affiliatedCompanies.map((comp, idx) => (
-              <span
-                key={idx}
-                className="px-3.5 py-1.5 rounded-2xl bg-zinc-900 border border-zinc-800 text-xs font-medium text-zinc-200 hover:border-zinc-700 transition-colors"
-              >
-                {comp}
-              </span>
-            ))}
-            <span className="px-3.5 py-1.5 rounded-2xl bg-zinc-900/40 border border-zinc-800/60 text-xs text-zinc-500">
-              &amp; More Institutional Partners
-            </span>
-          </div>
-        </section>
-
-        {/* Production Case Studies & Delivery Matrix */}
-        <section className="space-y-6">
-          <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-2 border-b border-zinc-900 pb-4">
+        {/* Quantified Production Case Studies */}
+        <section className="space-y-8">
+          <div className="border-b border-zinc-900 pb-4 flex flex-col sm:flex-row sm:items-center justify-between gap-2">
             <div>
-              <span className="text-[11px] font-mono uppercase tracking-widest text-zinc-500 block mb-1">
-                Audited Production Outcomes
+              <span className="text-xs font-mono uppercase tracking-widest text-zinc-500">
+                Audited Client Engagements
               </span>
-              <h2 className="text-2xl sm:text-3xl font-semibold tracking-tight text-white">
-                Client Case Studies &amp; Execution
+              <h2 className="text-2xl sm:text-3xl font-bold tracking-tight text-white mt-1">
+                Quantitative Case Studies
               </h2>
             </div>
-            <span className="text-xs font-mono text-zinc-500">Delivery Log Benchmarks</span>
+            <span className="px-3 py-1 rounded-full bg-zinc-900 border border-zinc-700/80 text-zinc-200 text-xs font-mono">
+              Live Production Records
+            </span>
           </div>
 
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             {caseStudies.map((cs, idx) => (
               <div
                 key={idx}
-                className="p-6 rounded-3xl bg-zinc-950 border border-zinc-800/80 hover:border-zinc-700 transition-all duration-200 flex flex-col justify-between"
+                className="p-6 sm:p-8 rounded-3xl bg-zinc-950 border border-zinc-800/80 hover:border-zinc-700 transition-all duration-300 space-y-6 flex flex-col justify-between"
               >
-                <div>
-                  <div className="flex items-center justify-between mb-3">
-                    <span className="text-[10px] font-mono uppercase tracking-wider px-2.5 py-0.5 rounded-full bg-zinc-900 border border-zinc-800 text-zinc-300">
+                <div className="space-y-4">
+                  <div className="flex items-center justify-between">
+                    <span className="text-xs font-mono text-zinc-400 uppercase tracking-wider">
                       {cs.category}
                     </span>
+                    <div className="text-xs font-mono font-bold text-white">
+                      Verified Impact
+                    </div>
                   </div>
 
-                  <h3 className="text-xl font-bold tracking-tight text-white">{cs.client}</h3>
-                  <p className="text-xs font-medium text-zinc-400 mt-0.5 mb-3">{cs.subtitle}</p>
+                  <div>
+                    <h3 className="text-xl font-bold text-white">{cs.client}</h3>
+                    <p className="text-xs text-zinc-400 mt-1 font-medium">{cs.subtitle}</p>
+                  </div>
 
-                  <div className="p-3 rounded-2xl bg-black/60 border border-zinc-800 text-xs font-mono text-zinc-200 mb-3">
+                  <div className="p-3.5 rounded-2xl bg-zinc-900/60 border border-zinc-800 text-xs font-mono text-zinc-200 font-semibold">
                     {cs.metrics}
                   </div>
 
-                  <p className="text-xs text-zinc-300 leading-relaxed">{cs.details}</p>
+                  <p className="text-xs sm:text-sm text-zinc-400 leading-relaxed">
+                    {cs.details}
+                  </p>
                 </div>
 
-                <div className="flex flex-wrap gap-1.5 pt-4 mt-4 border-t border-zinc-900">
-                  {cs.stack.map((tech, i) => (
+                <div className="flex flex-wrap gap-1.5 pt-4 border-t border-zinc-900">
+                  {cs.stack.map((item, sIdx) => (
                     <span
-                      key={i}
-                      className="px-2 py-0.5 rounded-lg bg-zinc-900 text-[10px] font-mono text-zinc-400 border border-zinc-800"
-                    >
-                      {tech}
-                    </span>
-                  ))}
-                </div>
-              </div>
-            ))}
-          </div>
-
-          {/* Operational Discipline Card */}
-          <div className="p-6 sm:p-7 rounded-3xl bg-zinc-950 border border-zinc-800/80 space-y-4">
-            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-zinc-900 pb-3">
-              <div>
-                <h4 className="text-base font-semibold text-white">
-                  Contemporaneous Operational Discipline &amp; Calendar Telemetry
-                </h4>
-                <p className="text-xs text-zinc-400 mt-0.5">
-                  Audit of 401 calendar events (284.8 hours) parsed across active client delivery cycles.
-                </p>
-              </div>
-              <span className="px-3 py-1 rounded-full bg-emerald-950/30 border border-emerald-500/20 text-emerald-400 text-xs font-mono">
-                71% High-Signal Focus Ratio
-              </span>
-            </div>
-
-            <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
-              <div className="p-3.5 rounded-2xl bg-black border border-zinc-800 text-center">
-                <div className="text-xl font-mono font-bold text-white">201.8h</div>
-                <div className="text-[10px] font-mono uppercase text-zinc-500 mt-0.5">Substantive Focus</div>
-              </div>
-              <div className="p-3.5 rounded-2xl bg-black border border-zinc-800 text-center">
-                <div className="text-xl font-mono font-bold text-white">71</div>
-                <div className="text-[10px] font-mono uppercase text-zinc-500 mt-0.5">Executive 1-on-1s</div>
-              </div>
-              <div className="p-3.5 rounded-2xl bg-black border border-zinc-800 text-center">
-                <div className="text-xl font-mono font-bold text-white">51.1m</div>
-                <div className="text-[10px] font-mono uppercase text-zinc-500 mt-0.5">Avg Session Length</div>
-              </div>
-              <div className="p-3.5 rounded-2xl bg-black border border-zinc-800 text-center">
-                <div className="text-xl font-mono font-bold text-emerald-400">100%</div>
-                <div className="text-[10px] font-mono uppercase text-zinc-500 mt-0.5">Clean Handover</div>
-              </div>
-            </div>
-          </div>
-        </section>
-
-        {/* Speaking, Keynotes & Academic Residencies */}
-        <section className="space-y-6">
-          <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-2 border-b border-zinc-900 pb-4">
-            <div>
-              <span className="text-[11px] font-mono uppercase tracking-widest text-zinc-500 block mb-1">
-                Global Stages &amp; Thought Leadership
-              </span>
-              <h2 className="text-2xl sm:text-3xl font-semibold tracking-tight text-white">
-                Speaking &amp; Professional Experience
-              </h2>
-            </div>
-            <span className="text-xs font-mono text-zinc-500">8,000+ Delegates Addressed</span>
-          </div>
-
-          <div className="space-y-3">
-            {experience.map((item, idx) => (
-              <div
-                key={idx}
-                className="p-5 sm:p-6 rounded-3xl bg-zinc-950 border border-zinc-800/80 hover:border-zinc-700 transition-all duration-200"
-              >
-                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-1 mb-2">
-                  <div className="flex items-center gap-2">
-                    <h3 className="text-base font-semibold text-white">{item.title}</h3>
-                    <span className="text-xs text-zinc-400">· {item.org}</span>
-                  </div>
-                  <span className="text-[10px] font-mono text-zinc-400 uppercase tracking-wider px-2.5 py-0.5 rounded-full bg-zinc-900 border border-zinc-800 w-fit">
-                    {item.tag}
-                  </span>
-                </div>
-                <p className="text-xs sm:text-sm text-zinc-300 leading-relaxed">{item.description}</p>
-              </div>
-            ))}
-          </div>
-        </section>
-
-        {/* Academic Excellence & Education (Mahindra University HIDDEN) */}
-        <section className="space-y-6">
-          <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-2 border-b border-zinc-900 pb-4">
-            <div>
-              <span className="text-[11px] font-mono uppercase tracking-widest text-zinc-500 block mb-1">
-                Institutional Foundations &amp; Rigor
-              </span>
-              <h2 className="text-2xl sm:text-3xl font-semibold tracking-tight text-white">
-                Academic Excellence &amp; Education
-              </h2>
-            </div>
-            <span className="text-xs font-mono text-zinc-500">Valedictorian &amp; National Distinction</span>
-          </div>
-
-          <div className="space-y-3">
-            {education.map((edu, idx) => (
-              <div
-                key={idx}
-                className="p-5 sm:p-6 rounded-3xl bg-zinc-950 border border-zinc-800/80 hover:border-zinc-700 transition-all duration-200"
-              >
-                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-1 mb-1.5">
-                  <h3 className="text-base font-semibold text-white">{edu.institution}</h3>
-                  <span className="text-xs font-mono text-zinc-400">{edu.degree}</span>
-                </div>
-                <p className="text-xs sm:text-sm text-zinc-300 leading-relaxed">{edu.highlight}</p>
-                
-                <div className="flex flex-wrap gap-2 mt-3">
-                  {edu.gold && (
-                    <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-xl text-xs font-mono bg-amber-950/20 border border-amber-500/20 text-amber-300">
-                      <Award className="w-3.5 h-3.5" />
-                      <span>{edu.gold}</span>
-                    </span>
-                  )}
-                  {edu.rank && (
-                    <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-xl text-xs font-mono bg-emerald-950/20 border border-emerald-500/20 text-emerald-400">
-                      <ShieldCheck className="w-3.5 h-3.5" />
-                      <span>{edu.rank}</span>
-                    </span>
-                  )}
-                </div>
-              </div>
-            ))}
-          </div>
-        </section>
-
-        {/* Major Achievements & National Rankings */}
-        <section className="space-y-6">
-          <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-2 border-b border-zinc-900 pb-4">
-            <div>
-              <span className="text-[11px] font-mono uppercase tracking-widest text-zinc-500 block mb-1">
-                Verified Competitive Milestones
-              </span>
-              <h2 className="text-2xl sm:text-3xl font-semibold tracking-tight text-white">
-                Major Achievements &amp; National Rankings
-              </h2>
-            </div>
-            <span className="text-xs font-mono text-zinc-500">Decile 1 Honors</span>
-          </div>
-
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-            {/* Competitive Wins */}
-            <div className="p-6 rounded-3xl bg-zinc-950 border border-zinc-800/80 space-y-3">
-              <h3 className="text-xs font-mono uppercase tracking-wider text-zinc-300 border-b border-zinc-900 pb-2">
-                Competitive Wins
-              </h3>
-              <ul className="space-y-2 text-xs text-zinc-300">
-                {achievements.competitiveWins.map((win, idx) => (
-                  <li key={idx} className="flex items-start gap-2">
-                    <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 mt-1.5 shrink-0" />
-                    <span>{win}</span>
-                  </li>
-                ))}
-              </ul>
-            </div>
-
-            {/* Global Recognition */}
-            <div className="p-6 rounded-3xl bg-zinc-950 border border-zinc-800/80 space-y-3">
-              <h3 className="text-xs font-mono uppercase tracking-wider text-zinc-300 border-b border-zinc-900 pb-2">
-                Global Recognition
-              </h3>
-              <ul className="space-y-2 text-xs text-zinc-300">
-                {achievements.globalRecognition.map((item, idx) => (
-                  <li key={idx} className="flex items-start gap-2">
-                    <span className="w-1.5 h-1.5 rounded-full bg-blue-400 mt-1.5 shrink-0" />
-                    <span>{item}</span>
-                  </li>
-                ))}
-              </ul>
-            </div>
-
-            {/* National Rankings */}
-            <div className="p-6 rounded-3xl bg-zinc-950 border border-zinc-800/80 space-y-3">
-              <h3 className="text-xs font-mono uppercase tracking-wider text-zinc-300 border-b border-zinc-900 pb-2">
-                National Rankings
-              </h3>
-              <ul className="space-y-2 text-xs text-zinc-300 font-mono">
-                {achievements.nationalRankings.map((rank, idx) => (
-                  <li key={idx} className="flex items-start gap-2">
-                    <span className="w-1.5 h-1.5 rounded-full bg-amber-400 mt-1.5 shrink-0" />
-                    <span>{rank}</span>
-                  </li>
-                ))}
-              </ul>
-            </div>
-
-            {/* Honors */}
-            <div className="p-6 rounded-3xl bg-zinc-950 border border-zinc-800/80 space-y-3">
-              <h3 className="text-xs font-mono uppercase tracking-wider text-zinc-300 border-b border-zinc-900 pb-2">
-                Honors &amp; Research Features
-              </h3>
-              <ul className="space-y-2 text-xs text-zinc-300">
-                {achievements.honors.map((honor, idx) => (
-                  <li key={idx} className="flex items-start gap-2">
-                    <span className="w-1.5 h-1.5 rounded-full bg-purple-400 mt-1.5 shrink-0" />
-                    <span>{honor}</span>
-                  </li>
-                ))}
-              </ul>
-            </div>
-          </div>
-        </section>
-
-        {/* Key Competencies & Certifications */}
-        <section className="space-y-6">
-          <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-2 border-b border-zinc-900 pb-4">
-            <div>
-              <span className="text-[11px] font-mono uppercase tracking-widest text-zinc-500 block mb-1">
-                Domain Mastery &amp; Accreditations
-              </span>
-              <h2 className="text-2xl sm:text-3xl font-semibold tracking-tight text-white">
-                Key Competencies &amp; Certifications
-              </h2>
-            </div>
-            <span className="text-xs font-mono text-zinc-500">Cross-Disciplinary Stack</span>
-          </div>
-
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-            {competencies.map((comp, idx) => (
-              <div
-                key={idx}
-                className="p-6 rounded-3xl bg-zinc-950 border border-zinc-800/80 space-y-3"
-              >
-                <h3 className="text-xs font-mono uppercase tracking-wider text-zinc-300">
-                  {comp.area}
-                </h3>
-                <div className="flex flex-wrap gap-2">
-                  {comp.items.map((item, i) => (
-                    <span
-                      key={i}
-                      className="px-3 py-1.5 rounded-2xl bg-zinc-900 border border-zinc-800 text-xs text-zinc-300"
+                      key={sIdx}
+                      className="px-2 py-0.5 rounded-full text-[11px] font-mono bg-zinc-900 text-zinc-400 border border-zinc-800"
                     >
                       {item}
                     </span>
@@ -1097,91 +1183,169 @@ export default function PressKitPage() {
           </div>
         </section>
 
-        {/* Approved Executive Biographies (1-Click Copy) */}
-        <section className="p-6 sm:p-8 rounded-3xl bg-zinc-950 border border-zinc-800/80 space-y-6">
-          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-zinc-900 pb-4">
-            <div>
-              <h3 className="text-lg font-semibold text-white">Approved Executive Biographies</h3>
-              <p className="text-xs text-zinc-400 mt-0.5">
-                Formatted for conference programs, keynote introductions, and institutional dossiers.
-              </p>
-            </div>
-
-            {/* Length toggle */}
-            <div className="flex items-center gap-1 bg-black p-1 rounded-2xl border border-zinc-800 self-start sm:self-auto">
-              <button
-                onClick={() => setActiveBioTab("short50")}
-                className={`px-3 py-1 rounded-xl text-xs font-medium transition-colors ${
-                  activeBioTab === "short50"
-                    ? "bg-zinc-800 text-white font-semibold"
-                    : "text-zinc-400 hover:text-white"
-                }`}
-              >
-                50 Words
-              </button>
-              <button
-                onClick={() => setActiveBioTab("standard150")}
-                className={`px-3 py-1 rounded-xl text-xs font-medium transition-colors ${
-                  activeBioTab === "standard150"
-                    ? "bg-zinc-800 text-white font-semibold"
-                    : "text-zinc-400 hover:text-white"
-                }`}
-              >
-                150 Words
-              </button>
-              <button
-                onClick={() => setActiveBioTab("comprehensive500")}
-                className={`px-3 py-1 rounded-xl text-xs font-medium transition-colors ${
-                  activeBioTab === "comprehensive500"
-                    ? "bg-zinc-800 text-white font-semibold"
-                    : "text-zinc-400 hover:text-white"
-                }`}
-              >
-                Comprehensive
-              </button>
-            </div>
+        {/* Academic Excellence & Education (Institution Name Kept Purely Minimal) */}
+        <section className="p-6 sm:p-10 rounded-3xl bg-zinc-950 border border-zinc-800/80 space-y-8 shadow-2xl">
+          <div className="border-b border-zinc-900 pb-5">
+            <span className="text-xs font-mono uppercase tracking-widest text-zinc-500">
+              Institutional Authority &amp; Quantitative Standing
+            </span>
+            <h2 className="text-2xl sm:text-3xl font-bold tracking-tight text-white mt-1">
+              Academic Excellence &amp; Mathematical Rigor
+            </h2>
+            <p className="text-xs sm:text-sm text-zinc-400 mt-1">
+              Underpinning high-throughput AI infrastructure with actuarial calculus, stochastic modeling, and quantitative finance.
+            </p>
           </div>
 
-          <div className="p-5 rounded-2xl bg-black/60 border border-zinc-800 space-y-4">
-            <p className="text-xs sm:text-sm text-zinc-300 leading-relaxed whitespace-pre-line font-normal">
-              {pressBios[activeBioTab]}
-            </p>
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
+            
+            {/* Degree & Valedictorian Standing */}
+            <div className="lg:col-span-6 space-y-4">
+              <div className="p-6 rounded-2xl bg-zinc-900/40 border border-zinc-800 space-y-4">
+                <div className="flex items-center justify-between">
+                  <div className="w-10 h-10 rounded-xl bg-zinc-900 border border-zinc-800 flex items-center justify-center">
+                    <GraduationCap className="w-5 h-5 text-white" />
+                  </div>
+                  <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-xl text-xs font-mono bg-zinc-900 border border-zinc-800 text-zinc-300">
+                    <Award className="w-3.5 h-3.5 text-zinc-300" />
+                    <span>Valedictorian Candidate</span>
+                  </span>
+                </div>
 
-            <div className="flex items-center justify-between pt-4 border-t border-zinc-900">
-              <span className="text-[11px] font-mono text-zinc-500">
-                {activeBioTab === "short50"
-                  ? "Elevator bio for panel and speaker booklets"
-                  : activeBioTab === "standard150"
-                  ? "Standard bio for keynote releases and press features"
-                  : "Comprehensive institutional dossier"}
-              </span>
+                <div>
+                  <h3 className="text-lg font-bold text-white">
+                    B.A. (Hons.) Economics &amp; Finance
+                  </h3>
+                  <div className="flex items-center gap-3 mt-1.5">
+                    <span className="text-2xl font-mono font-bold text-white">CGPA 9.51</span>
+                    <span className="text-xs font-mono text-zinc-400">Class Rank: 1 / 80</span>
+                  </div>
+                </div>
 
-              <button
-                onClick={() => handleCopy(pressBios[activeBioTab], "bio")}
-                className="px-3.5 py-1.5 rounded-xl bg-zinc-900 hover:bg-zinc-800 text-zinc-200 text-xs font-mono transition-colors flex items-center gap-1.5 border border-zinc-800"
-              >
-                {copiedField === "bio" ? (
-                  <>
-                    <Check className="w-3.5 h-3.5 text-emerald-400" />
-                    <span className="text-emerald-400">Copied to Clipboard</span>
-                  </>
-                ) : (
-                  <>
-                    <Copy className="w-3.5 h-3.5 text-zinc-400" />
-                    <span>Copy Biography</span>
-                  </>
-                )}
-              </button>
+                <p className="text-xs text-zinc-400 leading-relaxed">
+                  Stochastic calculus, econometric time series, and computational microstructure models. Awarded Dean&apos;s List Honor Roll across all academic semesters.
+                </p>
+              </div>
+            </div>
+
+            {/* Actuarial & Risk Certifications */}
+            <div className="lg:col-span-6 space-y-3">
+              <div className="p-4 rounded-2xl bg-zinc-900/40 border border-zinc-800 flex items-start gap-3.5">
+                <img
+                  src={`${basePath}/logos/actuaries-india.png`}
+                  alt="IAI Logo"
+                  className="logo-mono-dark h-8 w-8 object-contain shrink-0 mt-0.5"
+                />
+                <div>
+                  <div className="text-xs font-mono font-semibold text-white">
+                    Institute of Actuaries of India (IAI)
+                  </div>
+                  <div className="text-xs text-zinc-400 mt-0.5">
+                    Actuarial Common Entrance Test (ACET) — <strong className="text-zinc-200">Cleared with Distinction (AIR 1 Topper, 1st Attempt)</strong>. Mathematical modeling across CM1, CS1, CB1, CB2.
+                  </div>
+                </div>
+              </div>
+
+              <div className="p-4 rounded-2xl bg-zinc-900/40 border border-zinc-800 flex items-start gap-3.5">
+                <img
+                  src={`${basePath}/logos/irm-uk.svg`}
+                  alt="IRM UK Logo"
+                  className="logo-mono h-8 w-8 object-contain shrink-0 mt-0.5"
+                />
+                <div>
+                  <div className="text-xs font-mono font-semibold text-white">
+                    Institute of Risk Management (IRM UK)
+                  </div>
+                  <div className="text-xs text-zinc-400 mt-0.5">
+                    <strong className="text-zinc-200">National Winner</strong> in Enterprise Risk Management (ERM). Actuarial risk modeling &amp; corporate capital allocation.
+                  </div>
+                </div>
+              </div>
+
+              <div className="p-4 rounded-2xl bg-zinc-900/40 border border-zinc-800 flex items-start gap-3.5">
+                <img
+                  src={`${basePath}/logos/iit-roorkee.svg`}
+                  alt="IIT Roorkee Logo"
+                  className="logo-mono h-8 w-8 object-contain shrink-0 mt-0.5"
+                />
+                <div>
+                  <div className="text-xs font-mono font-semibold text-white">
+                    Indian Institute of Technology (IIT) Roorkee
+                  </div>
+                  <div className="text-xs text-zinc-400 mt-0.5">
+                    Certified <strong className="text-zinc-200">Macromolecular Engineer</strong>. Polymer structures, industrial chemical synthesis &amp; materials engineering.
+                  </div>
+                </div>
+              </div>
+
+              <div className="p-4 rounded-2xl bg-zinc-900/40 border border-zinc-800 flex items-start gap-3.5">
+                <img
+                  src={`${basePath}/logos/bloomberg.svg`}
+                  alt="Bloomberg Logo"
+                  className="logo-mono h-6 w-16 object-contain shrink-0 mt-1"
+                />
+                <div>
+                  <div className="text-xs font-mono font-semibold text-white">
+                    Bloomberg &amp; Capital Market Credentials
+                  </div>
+                  <div className="text-xs text-zinc-400 mt-0.5">
+                    Bloomberg Market Concepts (BMC) Certified · SEBI-Registered Equity Research Analyst · NISM Series XV Certified.
+                  </div>
+                </div>
+              </div>
             </div>
           </div>
         </section>
 
-        {/* NEWSPAPER CLIPPING SECTION AT THE END */}
+        {/* Keynote Lectures, Academic Positions & Global Presence */}
+        <section className="space-y-6">
+          <div className="border-b border-zinc-900 pb-4">
+            <span className="text-xs font-mono uppercase tracking-widest text-zinc-500">
+              Global Engagements
+            </span>
+            <h2 className="text-2xl sm:text-3xl font-bold tracking-tight text-white mt-1">
+              Keynote Lectures &amp; Academic Positions
+            </h2>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+            {experience.map((exp, idx) => (
+              <div
+                key={idx}
+                className="p-6 rounded-3xl bg-zinc-950 border border-zinc-800/80 hover:border-zinc-700 transition-all duration-200 flex flex-col justify-between space-y-4"
+              >
+                <div className="space-y-3">
+                  <div className="flex items-center justify-between">
+                    <span className="px-2.5 py-0.5 rounded-full text-[10px] font-mono tracking-wider uppercase bg-zinc-900 border border-zinc-800 text-zinc-300">
+                      {exp.tag}
+                    </span>
+                    <img
+                      src={exp.logo}
+                      alt={`${exp.org} Logo`}
+                      className={`${exp.isDarkPng ? "logo-mono-dark" : "logo-mono"} h-5 max-w-[70px] object-contain`}
+                    />
+                  </div>
+
+                  <div>
+                    <h3 className="text-base font-bold text-white">{exp.title}</h3>
+                    <div className="text-xs font-mono text-zinc-400 mt-0.5">{exp.org}</div>
+                  </div>
+
+                  <p className="text-xs text-zinc-400 leading-relaxed">
+                    {exp.description}
+                  </p>
+                </div>
+              </div>
+            ))}
+          </div>
+        </section>
+
+        {/* Featured Press Coverage Section: Education Times Clipping */}
         <section id="media-feature" className="p-6 sm:p-10 rounded-3xl bg-zinc-950 border border-zinc-800/80 space-y-6 scroll-mt-24 shadow-2xl">
           <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-zinc-900 pb-5">
             <div>
               <div className="flex items-center gap-2 mb-1">
-                <span className="px-2.5 py-0.5 rounded-full text-[10px] font-mono tracking-wider uppercase bg-blue-950/40 border border-blue-500/30 text-blue-400">
+                <span className="px-2.5 py-0.5 rounded-full text-[10px] font-mono tracking-wider uppercase bg-zinc-900 border border-zinc-700 text-zinc-200">
                   Featured Press Coverage · Education Times
                 </span>
                 <span className="text-xs font-mono text-zinc-500">03 February 2026</span>
@@ -1197,7 +1361,7 @@ export default function PressKitPage() {
             <a
               href={`${basePath}/images/education-times-clipping.jpeg`}
               download="Education_Times_Vinay_Jain_Feature.jpeg"
-              className="self-start sm:self-auto px-4 py-2 rounded-2xl bg-zinc-900 hover:bg-zinc-800 border border-zinc-700 text-white text-xs font-mono uppercase tracking-wider transition-colors inline-flex items-center gap-2 shrink-0"
+              className="self-start sm:self-auto px-4 py-2 rounded-2xl bg-zinc-900 hover:bg-zinc-800 border border-zinc-700 text-white text-xs font-mono uppercase tracking-wider transition-colors inline-flex items-center gap-2 shrink-0 cursor-pointer"
             >
               <Download className="w-3.5 h-3.5" />
               <span>Download Clipping</span>
@@ -1229,17 +1393,16 @@ export default function PressKitPage() {
             <div>
               <h2 className="text-xl font-semibold text-white">Press Kit &amp; Verified Institutional Links</h2>
               <p className="text-xs text-zinc-400 mt-1">
-                Official documents, portfolios, and direct executive line for conference chairs, boards, and partners.
+                Direct endpoints for conference coordinators, journalists, and institutional partners.
               </p>
             </div>
-
             <div className="flex items-center gap-2">
-              <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
-              <span className="text-xs font-mono text-zinc-400">Operating Worldwide</span>
+              <span className="w-2 h-2 rounded-full bg-zinc-200" />
+              <span className="text-xs font-mono text-zinc-400">Available for 2026/2027 Keynotes</span>
             </div>
           </div>
 
-          <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
             <a
               href={pressKitLinks.portfolio}
               target="_blank"
@@ -1251,8 +1414,8 @@ export default function PressKitPage() {
                 <ArrowUpRight className="w-4 h-4 text-zinc-500 group-hover:text-white transition-colors" />
               </div>
               <div>
-                <span className="text-[11px] font-mono text-zinc-500 uppercase block mb-1">Portfolio Website</span>
-                <span className="text-sm font-semibold text-white">Click here to View Portfolio</span>
+                <span className="text-[11px] font-mono text-zinc-500 uppercase block mb-1">Interactive Showcase</span>
+                <span className="text-sm font-semibold text-white">Full Digital Portfolio</span>
               </div>
             </a>
 
@@ -1267,7 +1430,7 @@ export default function PressKitPage() {
                 <ArrowUpRight className="w-4 h-4 text-zinc-500 group-hover:text-white transition-colors" />
               </div>
               <div>
-                <span className="text-[11px] font-mono text-zinc-500 uppercase block mb-1">Official SharePoint</span>
+                <span className="text-[11px] font-mono text-zinc-500 uppercase block mb-1">Official Document</span>
                 <span className="text-sm font-semibold text-white">Download Press Kit (PDF)</span>
               </div>
             </a>
@@ -1291,18 +1454,95 @@ export default function PressKitPage() {
 
           <div className="pt-6 border-t border-zinc-900 flex flex-col sm:flex-row items-center justify-between gap-4 text-xs text-zinc-500 font-mono">
             <div className="flex flex-wrap items-center gap-3">
-              <span className="text-zinc-300">{pressKitLinks.email}</span>
+              <span className="text-zinc-300">rvinayjain@icloud.com</span>
               <span>·</span>
-              <span className="text-zinc-300">+91 {pressKitLinks.phone}</span>
+              <span className="text-zinc-300">+91 8096933000</span>
               <span>·</span>
-              <span>{pressKitLinks.location}</span>
+              <span>Telangana, India</span>
             </div>
             <div>
-              &copy; {new Date().getFullYear()} Vinay Jain. All rights reserved.
+              &copy; 2026 Vinay Jain. All rights reserved.
             </div>
           </div>
         </footer>
+
       </div>
+
+      {/* EASTER EGG TERMINAL MODAL (Triggered by Cmd+K, CLI button, or typing vj) */}
+      {isTerminalOpen && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-xl animate-in fade-in duration-200">
+          <div className="w-full max-w-2xl bg-zinc-950 border border-zinc-800 rounded-3xl overflow-hidden shadow-2xl flex flex-col max-h-[85vh]">
+            
+            {/* Terminal Window Header */}
+            <div className="px-5 py-3.5 bg-zinc-900/60 border-b border-zinc-800/80 flex items-center justify-between">
+              <div className="flex items-center gap-2">
+                <div
+                  className="w-3 h-3 rounded-full bg-zinc-700 hover:bg-red-500/80 transition-colors cursor-pointer"
+                  onClick={() => setIsTerminalOpen(false)}
+                  title="Close Terminal"
+                />
+                <div className="w-3 h-3 rounded-full bg-zinc-700 hover:bg-yellow-500/80 transition-colors cursor-pointer" />
+                <div className="w-3 h-3 rounded-full bg-zinc-700 hover:bg-green-500/80 transition-colors cursor-pointer" />
+                <span className="text-xs font-mono text-zinc-400 ml-2">vinay-jain — zsh — 80x24</span>
+              </div>
+              <button
+                onClick={() => setIsTerminalOpen(false)}
+                className="p-1 rounded-lg text-zinc-500 hover:text-white hover:bg-zinc-800/60 transition-colors cursor-pointer"
+              >
+                <X className="w-4 h-4" />
+              </button>
+            </div>
+
+            {/* Quick Suggestion Directives */}
+            <div className="px-5 py-2.5 bg-zinc-900/30 border-b border-zinc-800/60 flex items-center gap-2 overflow-x-auto text-[11px] font-mono">
+              <span className="text-zinc-500 uppercase text-[10px] tracking-wider shrink-0">Directives:</span>
+              {["whoami", "unicorn", "metrics", "anand-mahindra", "quant", "contact", "unicorn-mode", "clear"].map((c) => (
+                <button
+                  key={c}
+                  onClick={() => executeCommand(c)}
+                  className="px-2.5 py-0.5 rounded-full bg-zinc-900 hover:bg-zinc-800 border border-zinc-800 hover:border-zinc-700 text-zinc-300 hover:text-white transition-colors shrink-0 cursor-pointer"
+                >
+                  {c}
+                </button>
+              ))}
+            </div>
+
+            {/* Terminal Output Log */}
+            <div className="p-5 flex-1 overflow-y-auto font-mono text-xs space-y-4">
+              {terminalLogs.map((log, index) => (
+                <div key={index} className="space-y-1.5">
+                  {log.cmd !== "init" && (
+                    <div className="flex items-center gap-2 text-zinc-500">
+                      <span className="text-zinc-300">vinay@unicorn-os:~$</span>
+                      <span className="text-white font-semibold">{log.cmd}</span>
+                    </div>
+                  )}
+                  <div className="pl-4 border-l border-zinc-800">{log.output}</div>
+                </div>
+              ))}
+            </div>
+
+            {/* Terminal Input Form */}
+            <form onSubmit={handleTerminalSubmit} className="p-3 bg-zinc-900/50 border-t border-zinc-800 flex items-center gap-2">
+              <span className="text-xs font-mono text-zinc-400 pl-2">vinay@unicorn-os:~$</span>
+              <input
+                type="text"
+                value={terminalInput}
+                onChange={(e) => setTerminalInput(e.target.value)}
+                placeholder="type directive (e.g. whoami, unicorn, metrics)..."
+                className="flex-1 bg-transparent text-xs font-mono text-white focus:outline-none placeholder:text-zinc-600"
+                autoFocus
+              />
+              <button
+                type="submit"
+                className="px-3 py-1 rounded-xl bg-white text-black text-xs font-mono font-medium hover:bg-zinc-200 transition-colors cursor-pointer"
+              >
+                Run
+              </button>
+            </form>
+          </div>
+        </div>
+      )}
     </main>
   );
 }

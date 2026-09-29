@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 50" fill="currentColor">
+  <rect x="10" y="14" width="9" height="9" rx="2" />
+  <rect x="23" y="14" width="9" height="9" rx="2" opacity="0.6" />
+  <rect x="10" y="27" width="9" height="9" rx="2" opacity="0.6" />
+  <rect x="23" y="27" width="9" height="9" rx="2" />
+  <text x="44" y="32" font-family="-apple-system, BlinkMacSystemFont, 'Helvetica Neue', Helvetica, Arial, sans-serif" font-weight="700" font-size="20" letter-spacing="-0.5">DEXSET</text>
+  <text x="135" y="32" font-family="-apple-system, BlinkMacSystemFont, 'Helvetica Neue', Helvetica, Arial, sans-serif" font-weight="400" font-size="14" opacity="0.6">AI</text>
+</svg>
